@@ -1,0 +1,526 @@
+{
+	"info": {
+		"_postman_id": "7e32a979-a801-4488-afb2-93dac27869bc",
+		"name": "Users collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6c0eb706-c85f-4caf-a49a-1d177b08ea31",
+						"exec": [
+							"//set variable email",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"email\", jsonData.email);",
+							"console.log(jsonData);",
+							"",
+							"//1.Correct response format JSON",
+							"pm.test(\"Correct response format JSON\", function (){",
+							"    pm.response.to.have.jsonBody()",
+							"});",
+							"",
+							"//2.We have all the declared fields in response",
+							"pm.test(\"Check that we have all declared fields\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData).to.have.property(\"email\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"testa_{{$randomInt}}@testa.testa\",\n    \"name\": \"testa_{{$randomInt}}\",\n    \"password\": \"1\"\n}"
+				},
+				"url": {
+					"raw": "http://users.bugred.ru/tasks/rest/doregister",
+					"protocol": "http",
+					"host": [
+						"users",
+						"bugred",
+						"ru"
+					],
+					"path": [
+						"tasks",
+						"rest",
+						"doregister"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Company",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1e897f1d-5861-41a1-a04d-a3ea08479599",
+						"exec": [
+							"//set variable company id",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"id_company\", jsonData.id_company);",
+							"console.log(pm.variables.get(\"id_company\"));",
+							"",
+							"",
+							"//1.Check that company created succsess",
+							"pm.test(\"Company created success\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.type).to.eql(\"success\");",
+							"});",
+							"",
+							"//2.We have all required fields in response",
+							"pm.test(\"Check that we have all required fields\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData).to.have.property(\"id_company\");",
+							"    pm.expect(jsonData).to.have.property(\"company\");",
+							"});",
+							"",
+							"//3. Fields value isn't NULL",
+							"pm.test(\"Check that value isn't NULL\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id_company).not.equal(null);",
+							"    pm.expect(jsonData.company).not.equal(null);",
+							"});",
+							"",
+							"//4. Fields value isn't empty",
+							"pm.test(\"Check that value isn't empty\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id_company).not.equal(\"\");",
+							"    pm.expect(jsonData.company).not.equal(\"\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"company_name\": \"TestaCompany_{{$randomInt}}\",\n  \"company_type\": \"{{company_type}}\",\n  \"company_users\": [\"{{email}}\"],\n  \"email_owner\": \"{{email_owner}}\"\n}"
+				},
+				"url": {
+					"raw": "http://users.bugred.ru/tasks/rest/createcompany",
+					"protocol": "http",
+					"host": [
+						"users",
+						"bugred",
+						"ru"
+					],
+					"path": [
+						"tasks",
+						"rest",
+						"createcompany"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User With Tasks - all fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0cfa5211-041b-42fe-9242-e080a87313d2",
+						"exec": [
+							"//set variable tasks",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"task1\", jsonData.tasks[0].id);",
+							"postman.setEnvironmentVariable(\"task2\", jsonData.tasks[1].id);",
+							"",
+							"//1.We have all declared fields in response",
+							"pm.test(\"Check that we have all required fields\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData).to.have.property(\"email\");",
+							"    pm.expect(jsonData).to.have.property(\"name\");",
+							"    pm.expect(jsonData).to.have.property(\"tasks\");",
+							"    pm.expect(jsonData).to.have.property(\"companies\");",
+							"    pm.expect(jsonData).to.have.property(\"hobby\");",
+							"    pm.expect(jsonData).to.have.property(\"adres\");",
+							"    pm.expect(jsonData).to.have.property(\"name1\");",
+							"    pm.expect(jsonData).to.have.property(\"surname1\");",
+							"    pm.expect(jsonData).to.have.property(\"fathername1\");",
+							"    pm.expect(jsonData).to.have.property(\"cat\");",
+							"    pm.expect(jsonData).to.have.property(\"dog\");",
+							"    pm.expect(jsonData).to.have.property(\"parrot\");",
+							"    pm.expect(jsonData).to.have.property(\"cavy\");",
+							"    pm.expect(jsonData).to.have.property(\"hamster\");",
+							"    pm.expect(jsonData).to.have.property(\"squirrel\");",
+							"    pm.expect(jsonData).to.have.property(\"phone\");",
+							"    pm.expect(jsonData).to.have.property(\"gender\");",
+							"    pm.expect(jsonData).to.have.property(\"birthday\");",
+							"    pm.expect(jsonData).to.have.property(\"date_start\");",
+							"",
+							"});",
+							"",
+							"//2. Fields value isn't NULL",
+							"pm.test(\"Check that value isn't NULL\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData.mail).not.equal(null);",
+							"    pm.expect(jsonData.name).not.equal(null);",
+							"    pm.expect(jsonData.tasks).not.equal(null);",
+							"    pm.expect(jsonData.companies).not.equal(null);",
+							"    pm.expect(jsonData.hobby).not.equal(null);",
+							"    pm.expect(jsonData.adres).not.equal(null);",
+							"    pm.expect(jsonData.name1).not.equal(null);",
+							"    pm.expect(jsonData.surname1).not.equal(null);",
+							"    pm.expect(jsonData.fathername1).not.equal(null);",
+							"    pm.expect(jsonData.cat).not.equal(null);",
+							"    pm.expect(jsonData.dog).not.equal(null);",
+							"    pm.expect(jsonData.parrot).not.equal(null);",
+							"    pm.expect(jsonData.cavy).not.equal(null);",
+							"    pm.expect(jsonData.hamster).not.equal(null);",
+							"    pm.expect(jsonData.squirrel).not.equal(null);",
+							"    pm.expect(jsonData.phone).not.equal(null);",
+							"    pm.expect(jsonData.gender).not.equal(null);",
+							"    pm.expect(jsonData.birthday).not.equal(null);",
+							"    pm.expect(jsonData.date_start).not.equal(null);",
+							"});",
+							"",
+							"//3. Fields value isn't empty",
+							"pm.test(\"Check that value isn't empty\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData.mail).not.equal(\"\");",
+							"    pm.expect(jsonData.name).not.equal(\"\");",
+							"    pm.expect(jsonData.tasks).not.equal(\"\");",
+							"    pm.expect(jsonData.companies).not.equal(\"\");",
+							"    pm.expect(jsonData.hobby).not.equal(\"\");",
+							"    pm.expect(jsonData.adres).not.equal(\"\");",
+							"    pm.expect(jsonData.name1).not.equal(\"\");",
+							"    pm.expect(jsonData.surname1).not.equal(\"\");",
+							"    pm.expect(jsonData.fathername1).not.equal(\"\");",
+							"    pm.expect(jsonData.cat).not.equal(\"\");",
+							"    pm.expect(jsonData.dog).not.equal(\"\");",
+							"    pm.expect(jsonData.parrot).not.equal(\"\");",
+							"    pm.expect(jsonData.cavy).not.equal(\"\");",
+							"    pm.expect(jsonData.hamster).not.equal(\"\");",
+							"    pm.expect(jsonData.squirrel).not.equal(\"\");",
+							"    pm.expect(jsonData.phone).not.equal(\"\");",
+							"    pm.expect(jsonData.gender).not.equal(\"\");",
+							"    pm.expect(jsonData.birthday).not.equal(\"\");",
+							"    pm.expect(jsonData.date_start).not.equal(\"\");",
+							"});",
+							"",
+							"    "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"email\": \"testaUserT_{{$randomInt}}@testa.testa\",\n \"name\": \"TestaUserT_{{$randomInt}}\",\n \"tasks\": [{\n   \"title\": \"Task 1\",\n   \"description\": \"Task 111\"\n  },\n  {\n   \"title\": \"Task 2\",\n   \"description\": \"Task 222\"\n  }\n ],\n \"companies\": [\"{{id_company}}\"],\n \"hobby\":\"Стрельба из лука, Настолки\",\n  \"adres\":\"адрес 1\",\n  \"name1\":\"Тестовый, ясен пень\",\n  \"surname1\":\"Иванов\",\n  \"fathername1\":\"Петров\",\n  \"cat\":\"Маруся\",\n  \"dog\":\"Ушастый\",\n  \"parrot\":\"Васька\",\n  \"cavy\":\"Кто ты?\",\n  \"hamster\":\"Хомяк\",\n  \"squirrel\":\"Белая горячка к нам пришла\",\n  \"phone\":\"333 33 33\",\n  \"inn\":\"123456789012\",\n  \"gender\":\"m\",\n  \"birthday\":\"01.01.1900\",\n  \"date_start\":\"11.11.2000\"\n}"
+				},
+				"url": {
+					"raw": "http://users.bugred.ru/tasks/rest/createuserwithtasks",
+					"protocol": "http",
+					"host": [
+						"users",
+						"bugred",
+						"ru"
+					],
+					"path": [
+						"tasks",
+						"rest",
+						"createuserwithtasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User With Tasks - only required fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0cfa5211-041b-42fe-9242-e080a87313d2",
+						"exec": [
+							"//1.We have required fields in response",
+							"pm.test(\"Check that we have all required fields\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData).to.have.property(\"email\");",
+							"    pm.expect(jsonData).to.have.property(\"name\");",
+							"    pm.expect(jsonData).to.have.property(\"tasks\");",
+							"});",
+							"",
+							"//2. Company value is NULL",
+							"pm.test(\"Check that company value is NULL\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData.companies).to.equal(null);",
+							"});",
+							"    ",
+							"    ",
+							"    "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \"email\": \"testaUserT_{{$randomInt}}@testa.testa\",\n \"name\": \"TestaUserT_{{$randomInt}}\",\n \"tasks\": [{\n   \"title\": \"Task 1\",\n   \"description\": \"Task 111\"\n  },\n  {\n   \"title\": \"Task 2\",\n   \"description\": \"Task 222\"\n  }\n ]\n}"
+				},
+				"url": {
+					"raw": "http://users.bugred.ru/tasks/rest/createuserwithtasks",
+					"protocol": "http",
+					"host": [
+						"users",
+						"bugred",
+						"ru"
+					],
+					"path": [
+						"tasks",
+						"rest",
+						"createuserwithtasks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User - all fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "23e02b22-abef-4366-a807-968d9e04d0dc",
+						"exec": [
+							"//1.We have all declared fields in response",
+							"pm.test(\"Check that we have all required fields\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData).to.have.property(\"email\");",
+							"    pm.expect(jsonData).to.have.property(\"name\");",
+							"    pm.expect(jsonData).to.have.property(\"tasks\");",
+							"    pm.expect(jsonData).to.have.property(\"companies\");",
+							"    pm.expect(jsonData).to.have.property(\"hobby\");",
+							"    pm.expect(jsonData).to.have.property(\"adres\");",
+							"    pm.expect(jsonData).to.have.property(\"name1\");",
+							"    pm.expect(jsonData).to.have.property(\"surname1\");",
+							"    pm.expect(jsonData).to.have.property(\"fathername1\");",
+							"    pm.expect(jsonData).to.have.property(\"cat\");",
+							"    pm.expect(jsonData).to.have.property(\"dog\");",
+							"    pm.expect(jsonData).to.have.property(\"parrot\");",
+							"    pm.expect(jsonData).to.have.property(\"cavy\");",
+							"    pm.expect(jsonData).to.have.property(\"hamster\");",
+							"    pm.expect(jsonData).to.have.property(\"squirrel\");",
+							"    pm.expect(jsonData).to.have.property(\"phone\");",
+							"    pm.expect(jsonData).to.have.property(\"gender\");",
+							"    pm.expect(jsonData).to.have.property(\"birthday\");",
+							"    pm.expect(jsonData).to.have.property(\"date_start\");",
+							"",
+							"});",
+							"",
+							"//2. Fields value isn't NULL",
+							"pm.test(\"Check that value isn't NULL\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData.mail).not.equal(null);",
+							"    pm.expect(jsonData.name).not.equal(null);",
+							"    pm.expect(jsonData.tasks).not.equal(null);",
+							"    pm.expect(jsonData.companies).not.equal(null);",
+							"    pm.expect(jsonData.hobby).not.equal(null);",
+							"    pm.expect(jsonData.adres).not.equal(null);",
+							"    pm.expect(jsonData.name1).not.equal(null);",
+							"    pm.expect(jsonData.surname1).not.equal(null);",
+							"    pm.expect(jsonData.fathername1).not.equal(null);",
+							"    pm.expect(jsonData.cat).not.equal(null);",
+							"    pm.expect(jsonData.dog).not.equal(null);",
+							"    pm.expect(jsonData.parrot).not.equal(null);",
+							"    pm.expect(jsonData.cavy).not.equal(null);",
+							"    pm.expect(jsonData.hamster).not.equal(null);",
+							"    pm.expect(jsonData.squirrel).not.equal(null);",
+							"    pm.expect(jsonData.phone).not.equal(null);",
+							"    pm.expect(jsonData.gender).not.equal(null);",
+							"    pm.expect(jsonData.birthday).not.equal(null);",
+							"    pm.expect(jsonData.date_start).not.equal(null);",
+							"});",
+							"",
+							"//3. Fields value isn't empty",
+							"pm.test(\"Check that value isn't empty\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData.mail).not.equal(\"\");",
+							"    pm.expect(jsonData.name).not.equal(\"\");",
+							"    pm.expect(jsonData.tasks).not.equal(\"\");",
+							"    pm.expect(jsonData.companies).not.equal(\"\");",
+							"    pm.expect(jsonData.hobby).not.equal(\"\");",
+							"    pm.expect(jsonData.adres).not.equal(\"\");",
+							"    pm.expect(jsonData.name1).not.equal(\"\");",
+							"    pm.expect(jsonData.surname1).not.equal(\"\");",
+							"    pm.expect(jsonData.fathername1).not.equal(\"\");",
+							"    pm.expect(jsonData.cat).not.equal(\"\");",
+							"    pm.expect(jsonData.dog).not.equal(\"\");",
+							"    pm.expect(jsonData.parrot).not.equal(\"\");",
+							"    pm.expect(jsonData.cavy).not.equal(\"\");",
+							"    pm.expect(jsonData.hamster).not.equal(\"\");",
+							"    pm.expect(jsonData.squirrel).not.equal(\"\");",
+							"    pm.expect(jsonData.phone).not.equal(\"\");",
+							"    pm.expect(jsonData.gender).not.equal(\"\");",
+							"    pm.expect(jsonData.birthday).not.equal(\"\");",
+							"    pm.expect(jsonData.date_start).not.equal(\"\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"testaUser_{{$randomInt}}@testa.testa\",\n  \"name\": \"TestaUser_{{$randomInt}}\",\n  \"tasks\": [\"{{task1}}\",\"{{task2}}\"],\n  \"companies\": [\"{{id_company}}\"],\n  \"hobby\":\"Стрельба из лука, Настолки\",\n  \"adres\":\"адрес 1\",\n  \"name1\":\"Тестовый, ясен пень\",\n  \"surname1\":\"Иванов\",\n  \"fathername1\":\"Петров\",\n  \"cat\":\"Маруся\",\n  \"dog\":\"Ушастый\",\n  \"parrot\":\"Васька\",\n  \"cavy\":\"Кто ты?\",\n  \"hamster\":\"Хомяк\",\n  \"squirrel\":\"Белая горячка к нам пришла\",\n  \"phone\":\"333 33 33\",\n  \"inn\":\"123456789012\",\n  \"gender\":\"m\",\n  \"birthday\":\"01.01.1900\",\n  \"date_start\":\"11.11.2000\"\n}"
+				},
+				"url": {
+					"raw": "http://users.bugred.ru/tasks/rest/createuser",
+					"protocol": "http",
+					"host": [
+						"users",
+						"bugred",
+						"ru"
+					],
+					"path": [
+						"tasks",
+						"rest",
+						"createuser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User - only required fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "23e02b22-abef-4366-a807-968d9e04d0dc",
+						"exec": [
+							"//1.We have required fields in response",
+							"pm.test(\"Check that we have all required fields\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData).to.have.property(\"email\");",
+							"    pm.expect(jsonData).to.have.property(\"name\");",
+							"    pm.expect(jsonData).to.have.property(\"tasks\");",
+							"    pm.expect(jsonData).to.have.property(\"companies\");",
+							"});",
+							"",
+							"//2. Fields value isn't NULL",
+							"pm.test(\"Check that value isn't NULL\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData.mail).not.equal(null);",
+							"    pm.expect(jsonData.name).not.equal(null);",
+							"    pm.expect(jsonData.tasks).not.equal(null);",
+							"    pm.expect(jsonData.companies).not.equal(null);",
+							"});",
+							"",
+							"//2. Fields value isn't empty",
+							"pm.test(\"Check that value isn't empty\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    ",
+							"    pm.expect(jsonData.mail).not.equal(\"\");",
+							"    pm.expect(jsonData.name).not.equal(\"\");",
+							"    pm.expect(jsonData.tasks).not.equal(\"\");",
+							"    pm.expect(jsonData.companies).not.equal(\"\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"testaUser_{{$randomInt}}@testa.testa\",\n  \"name\": \"TestaUser_{{$randomInt}}\",\n  \"tasks\": [\"{{task1}}\",\"{{task2}}\"],\n  \"companies\": [\"{{id_company}}\"]\n}"
+				},
+				"url": {
+					"raw": "http://users.bugred.ru/tasks/rest/createuser",
+					"protocol": "http",
+					"host": [
+						"users",
+						"bugred",
+						"ru"
+					],
+					"path": [
+						"tasks",
+						"rest",
+						"createuser"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
